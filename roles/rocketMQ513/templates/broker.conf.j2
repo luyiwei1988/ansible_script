@@ -1,0 +1,19 @@
+brokerClusterName=DefaultCluster
+brokerName=broker-{{ mqgroup }}
+{% if mqrole == 'master' %}
+brokerId=0
+{% else %}
+brokerId=1
+{% endif %}
+deleteWhen=04
+fileReservedTime=48
+brokerRole=SYNC_MASTER
+flushDiskType=ASYNC_FLUSH
+autoCreateTopicEnable=false
+namesrvAddr={% for host in groups.nameserver -%}{{ hostvars[host]['ansible_host'] }}:9876{% if not loop.last %};{% endif %}{% endfor %}
+
+# Controller
+enableControllerMode=true
+controllerAddr={% for host in groups.nameserver -%}{{ hostvars[host]['ansible_host'] }}:9878{% if not loop.last %};{% endif %}{% endfor %}
+
+allAckInSyncStateSet=true

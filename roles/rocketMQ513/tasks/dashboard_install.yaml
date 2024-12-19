@@ -1,0 +1,35 @@
+---
+- name: create dashboard directory
+  ansible.builtin.file:
+    path: /home/rocketmq/dashboard
+    state: directory
+    owner: rocketmq
+    group: rocketmq
+      
+- name: copy file to  dashboard directory
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /home/rocketmq/dashboard
+    mode: '0755'
+    owner: rocketmq
+  loop:
+    - "rocketmq-dashboard-1.0.1-SNAPSHOT.jar"
+      #- "run.sh"
+
+- name: apply dashboard start bash
+  template:
+    src: run.sh.j2
+    dest: "/home/rocketmq/dashboard/run.sh"
+
+- name: add firewalld rule
+  ansible.builtin.shell:
+    cmd: firewall-cmd --zone=public --permanent --add-port=8080/tcp
+
+- name: firewalld reload
+  ansible.builtin.shell:
+    cmd: firewall-cmd --reload
+
+- name: start dashboard board
+  ansible.builtin.shell:
+    cmd: /bin/bash /home/rocketmq/dashboard/run.sh 
+

@@ -1,0 +1,19 @@
+---
+- name: copy package to dest
+  ansible.builtin.copy:
+    src: OpenJDK8U-jdk_x64_linux_hotspot_8u412b08.tar.gz
+    dest: /tmp
+
+- name: unzip JDK to directory
+  ansible.builtin.unarchive:
+    src: /tmp/OpenJDK8U-jdk_x64_linux_hotspot_8u412b08.tar.gz
+    dest: /opt
+    mode: '0755'
+
+- name: add into profile with JDK path
+  ansible.builtin.blockinfile:
+    path: /etc/profile
+    block: |
+      export JAVA_HOME=/opt/jdk8u412-b08
+      export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+      export PATH=$PATH:$JAVA_HOME/bin

@@ -1,0 +1,29 @@
+---
+- name: add sysctl parameters into /etc/sysctl.conf
+  ansible.builtin.blockinfile:
+    path: /etc/sysctl.conf
+    block: |
+      vm.overcommit_memory=1
+      vm.max_map_count=655360
+      vm.swappiness=10
+      vm.min_free_kbytes=1000000
+      vm.drop_caches=1
+      vm.zone_reclaim_mode=0
+      vm.dirty_background_ratio=50
+      vm.dirty_ratio=50
+      vm.dirty_writeback_centisecs=360000
+      vm.page-cluster=3
+
+- name: add sysctl parameters into /etc/security/limits.conf
+  ansible.builtin.blockinfile:
+    path: /etc/security/limits.conf
+    block: |
+      * soft nofile 655350
+      * hard nofile 655350
+      * hard memlock unlimited
+      * soft memlock unlimited
+
+- name: make the parameters work
+  ansible.builtin.shell:
+      cmd: sysctl -p
+

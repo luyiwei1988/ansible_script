@@ -1,0 +1,12 @@
+#Namesrv config
+listenPort = 9876
+enableControllerInNamesrv = true
+
+#controller config
+enableElectUncleanMaster = false
+notifyBrokerRoleChanged = true
+controllerStorePath = /home/rocketmq/DledgerController
+controllerDLegerGroup = group1
+controllerDLegerPeers = {% for host in groups.nameserver -%}{{ hostvars[host]['inventory_hostname'] }}-{{ hostvars[host]['ansible_host'] }}:9878{% if not loop.last %};{% endif %}{% endfor %}
+
+controllerDLegerSelfId = {{ inventory_hostname }}

@@ -1,0 +1,10 @@
+---
+- name: firewalld config
+  ansible.builtin.shell:
+    # cmd: rule family="ipv4" source address={{ item }} port protocol="tcp" port="0-65535" accept
+    cmd: firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address={{ hostvars[item].ansible_default_ipv4.address }} port protocol="tcp" port="0-65535" accept'
+  loop: "{{ groups['all'] }}"
+
+- name: firewalld reload
+  ansible.builtin.shell:
+    cmd: firewall-cmd --reload
