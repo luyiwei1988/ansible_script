@@ -1,0 +1,73 @@
+---
+- name: initialise system parameters
+  ansible.builtin.include_tasks: 
+    file: initialise_system_parameter.yaml 
+    apply:
+      tags: initial
+  tags:
+    - initial
+    
+
+- name: create redis directory
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+  loop:
+    - "/usr/local/redis"
+    - "/etc/redis"
+  
+- name: copy & unzipped package to directory
+  ansible.builtin.unarchive:
+    src: redis-bin.zip
+    dest: /tmp
+    copy: true
+    mode: '0755'
+
+- name: Find all files in the unzipped directory
+  ansible.builtin.find:
+    paths: /tmp/redis-bin
+    file_type: file
+    recurse: yes  # 递归查找子目录中的文件
+  register: found_files
+
+- name: copy files from unzipped directory to destination directory
+  ansible.builtin.copy:
+    src: "{{ item.path }}"
+    dest: /usr/local/redis/
+    remote_src: true
+    mode: '0755'
+  loop: "{{ found_files.files }}"
+
+- name: copy redis configuration files
+  template:
+    src: "{{ item.src }}"
+    dest: "/etc/redis/{{ item.dest }}"
+    owner: root
+    group: root
+    mode: 0644
+  loop:
+    - { src: "redis.conf.j2", dest: "redis.conf" }
+    - { src: "redis-sentinel.conf.j2", dest: "redis-sentinel.conf" }
+
+- name: copy systemd file to dest
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /etc/systemd/system/
+  loop:
+    - redis.service
+    - redis-sentinel.service
+
+- name: systemd reload
+  ansible.builtin.systemd:
+    daemon_reload: yes
+
+- name: Start and enable service
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  loop:
+    - redis
+    - redis-sentinel

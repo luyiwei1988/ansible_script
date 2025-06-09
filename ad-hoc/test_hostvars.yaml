@@ -1,0 +1,10 @@
+---
+- name: Debug hostvars for web01
+  hosts: 172.17.194.219  # 或指定其他主机组
+  gather_facts: yes  # 收集目标主机的facts信息
+  tasks:
+    - name: Display all variables for web01
+      debug:
+        #var: hostvars # 输出web01的所有变量
+        var: hostvars["172.17.194.219"] # 输出web01的所有变量
+        #var: hostvars["172.17.194.219"].inventory_hostname # 输出web01的所有变量

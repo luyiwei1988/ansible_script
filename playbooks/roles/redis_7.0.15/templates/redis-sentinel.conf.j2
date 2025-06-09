@@ -1,0 +1,11 @@
+bind 0.0.0.0
+port {{ sentinel_port }}
+daemonize yes
+protected-mode no
+dir "/usr/local/redis"
+logfile "/var/log/redis_sentinel.log"
+pidfile "/var/run/redis_sentinel.pid"
+sentinel monitor mymaster {{ hostvars[groups['redis'][0]].ansible_host }} 6379 2
+sentinel auth-pass mymaster {{ redis_password }}
+sentinel down-after-milliseconds mymaster 10000
+sentinel parallel-syncs mymaster 2

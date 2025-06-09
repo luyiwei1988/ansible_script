@@ -1,0 +1,19 @@
+---
+- name: Batch change user passwords
+  hosts: 20250327_g  # 指定目标主机范围，可以是具体的主机名、组名或 all
+  become: yes
+  vars:
+    username: "httpd"  # 要修改密码的用户名
+    new_password: "NormalPassword@123"  # 新密码es
+    root_password: "7@HCBB^b025"
+  tasks:
+    - name: Change password for root
+      user:
+        name: "root"
+        password: "{{ root_password | password_hash('sha512') }}"
+        state: present
+    - name: Change password for httpd
+      user:
+        name: "{{ username }}"
+        password: "{{ new_password | password_hash('sha512') }}"
+        state: present

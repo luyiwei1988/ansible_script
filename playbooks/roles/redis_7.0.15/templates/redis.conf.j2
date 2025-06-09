@@ -1,0 +1,48 @@
+bind 0.0.0.0
+port {{ redis_port }}
+pidfile "/var/run/redis_{{ redis_port }}.pid"
+logfile "/var/log/redis_{{ redis_port }}.log"
+dir "/usr/local/redis"
+{% if inventory_hostname != hostvars[groups['redis'][0]].inventory_hostname %}
+replicaof {{ hostvars[groups['redis'][0]].ansible_host }} {{ redis_port }}
+{% endif %}
+requirepass "{{ redis_password }}"
+masterauth "{{ redis_password }}"
+replica-serve-stale-data no
+repl-disable-tcp-nodelay no
+daemonize yes
+maxmemory 4gb
+appendonly no
+appendfilename "appendonly.aof"
+protected-mode yes
+tcp-backlog 511
+timeout 0
+tcp-keepalive 300
+supervised no
+loglevel notice
+databases 16
+
+# rdb持久化相关配置，默认不开启持久化
+save ""
+# 密码与内存管理策略
+maxmemory-policy volatile-lru
+
+slowlog-log-slower-than 10000
+slowlog-max-len 128
+latency-monitor-threshold 0
+notify-keyspace-events ""
+hash-max-listpack-entries 512
+hash-max-listpack-value 64
+list-max-listpack-size -2
+list-compress-depth 0
+set-max-intset-entries 512
+zset-max-listpack-entries 128
+zset-max-listpack-value 64
+hll-sparse-max-bytes 3000
+activerehashing yes
+client-output-buffer-limit normal 0 0 0
+client-output-buffer-limit replica 256mb 64mb 60
+client-output-buffer-limit pubsub 32mb 8mb 60
+hz 10
+dynamic-hz yes
+rdb-save-incremental-fsync yes

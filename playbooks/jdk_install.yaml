@@ -1,0 +1,6 @@
+---
+- name: Deploy JDK 
+  hosts: jdk_group
+  become: true
+  roles:
+    - openJDK8u412

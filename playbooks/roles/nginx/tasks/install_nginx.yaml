@@ -1,0 +1,55 @@
+---
+- name: Verify OS Version
+  set_fact:
+    os_version: "{{ ansible_distribution_version }}"
+
+- name: Copy & unarchive package to dest
+  ansible.builtin.unarchive:
+    src: nginx-1.26.2_all_7.9.tar.gz
+    dest: /usr/local
+    copy: true
+  when: os_version == "7.9"
+
+- name: Copy & unarchive package to dest
+  ansible.builtin.unarchive:
+    src: nginx-1.26.2_all.zip
+    dest: /usr/local
+    copy: true
+  when: os_version | float >= 9.0
+
+- name: Copy & unarchive package to dest
+  ansible.builtin.unarchive:
+    src: nginx-1.26.2_all_alilinux_3.tar.gz
+    dest: /usr/local
+    copy: true
+  when: os_version == "3"
+
+- name: Give permissions to an existing file
+  ansible.builtin.file:
+    path: /usr/local/nginx/sbin/nginx
+    owner: ecs-user
+    group: root
+    mode: '755'
+
+#- name: Copy nginx.service to system directory
+#  ansible.builtin.shell: |
+#    cp /usr/local/nginx/nginx.service /etc/systemd/system
+#    systemctl daemon-reload
+#    systemctl enable nginx --now
+
+- name: Copy nginx.service to system directory
+  ansible.builtin.copy:
+    src: /usr/local/nginx/nginx.service
+    dest: /etc/systemd/system/
+    remote_src: true
+
+- name: Start and enable service
+  ansible.builtin.systemd:
+    name: "nginx"
+    state: started
+    enabled: yes
+    daemon_reload: yes
+
+- name: Check nginx status
+  ansible.builtin.shell:
+    cmd: systemctl status nginx

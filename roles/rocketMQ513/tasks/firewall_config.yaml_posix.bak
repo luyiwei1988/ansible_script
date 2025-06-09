@@ -1,7 +1,0 @@
----
-- name: add sysctl parameters into /etc/sysctl.conf
-  ansible.posix.firewalld:
-    rich_rule: rule family="ipv4" source address={{ item }} port protocol="tcp" port="0-65535" accept
-    permanent: true
-    state: enabled
-  loop: "{{ MQServer }}"

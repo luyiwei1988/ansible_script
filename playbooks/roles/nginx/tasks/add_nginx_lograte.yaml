@@ -1,0 +1,8 @@
+---
+- name: add nginx logratate
+  ansible.builtin.copy:
+    src: nginx_log_rotate.txt
+    dest: /etc/logrotate.d/nginx
+    owner: root
+    group: root
+    mode: 0644

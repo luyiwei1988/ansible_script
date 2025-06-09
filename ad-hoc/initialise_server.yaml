@@ -1,0 +1,61 @@
+---
+- name: server base configure
+  hosts: prod
+  become: yes
+  tasks:
+  - name: add httpd group
+    ansible.builtin.group:
+      name: httpd
+      state: present
+      
+  - name: add httpd user
+    ansible.builtin.user:
+      name: httpd
+      comment: normal user
+      group: httpd
+      create_home: yes
+      shell: /bin/bash
+      password: "{{ 'NormalPassword@123' | password_hash('sha512') }}"
+      # password: "$6$rounds=656000$CLSMgeAZQ4O7d/xO$egrLOhhUgyOrDcmCWs8D3Vh6rJhq52Pg4GdCItfEKN5.HD8ItUzi4aSbyOkC70Bs5IzwWO46YmlFiH6bdUXDS/"
+  
+  - name: Debug ansible_pkg_mgr
+    debug:
+      var: ansible_pkg_mgr
+
+  - name: Install a list of packages
+    ansible.builtin.dnf:
+      name:
+        - unzip
+        - vim
+        - chrony
+        - fontconfig
+        - urw-fonts
+      state: present
+      use_backend: dnf4
+    when: ansible_pkg_mgr == 'yum'
+    tags: package
+
+  - name: Install a list of packages
+    ansible.builtin.apt:
+      name:
+        - vim
+        - chrony
+        - xfsprogs
+        - unzip
+      state: present
+      update_cache: yes
+    when: ansible_pkg_mgr == 'apt'
+    tags: package
+      
+  - name: add history parameters into /etc/profile
+    ansible.builtin.lineinfile:
+      path: /etc/profile
+      line: 'export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "'
+      state: present
+
+  - name: Start and enable service
+    ansible.builtin.systemd:
+      name: "chronyd"
+      state: started
+      enabled: yes
+      daemon_reload: yes

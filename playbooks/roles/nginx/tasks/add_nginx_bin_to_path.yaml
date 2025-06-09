@@ -1,0 +1,7 @@
+---
+- name: Add nginx executor into PATH
+  lineinfile:
+    path: /etc/profile
+    line: "export PATH=$PATH:/usr/local/nginx/sbin"
+    insertafter: EOF
+    create: no

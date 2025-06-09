@@ -1,0 +1,6 @@
+---
+- name: Deploy redis + sentinel[three node]
+  hosts: redis
+  become: true
+  roles:
+    - redis_7.0.15

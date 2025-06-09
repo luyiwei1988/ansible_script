@@ -1,0 +1,15 @@
+/usr/local/nginx/logs/*.log {
+    daily
+    dateext
+    dateformat _%Y%m%d
+    missingok
+    rotate 30
+    compress
+    delaycompress
+    notifempty
+    copytruncate
+    sharedscripts
+    postrotate
+        /usr/local/nginx/sbin/nginx -s reload > /dev/null
+    endscript
+}

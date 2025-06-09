@@ -1,0 +1,9 @@
+---
+- name: Install Package
+  include_tasks: install_nginx.yaml
+
+- name: Add Path
+  include_tasks: add_nginx_bin_to_path.yaml
+
+- name: Add logRotate 
+  include_tasks: add_nginx_lograte.yaml 

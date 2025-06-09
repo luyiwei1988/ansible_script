@@ -1,0 +1,11 @@
+[Unit]
+Description=Redis Sentinel Server
+After=network.target
+[Service]
+Type=forking
+ExecStart=/usr/local/redis/redis-sentinel /etc/redis/redis-sentinel.conf
+ExecStop=/usr/local/redis/redis-cli -p 26379 shutdown
+PrivateTmp=true
+Restart=always
+[Install]
+WantedBy=multi-user.target

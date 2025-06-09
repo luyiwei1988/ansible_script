@@ -1,0 +1,29 @@
+---
+- name: Format /dev/vdb as XFS and mount it with UUID
+  hosts: 172.17.194.219 
+  become: yes
+  tasks:
+    - name: Check if /dev/vdb exists
+      stat:
+        path: /dev/vdb
+      register: vdb_status
+
+    - name: Format /dev/vdb as XFS filesystem
+      filesystem:
+        fstype: xfs
+        dev: /dev/vdb
+      when: vdb_status.stat.exists
+      ignore_errors: true
+
+    - name: Get UUID of /dev/vdb
+      shell: blkid -s UUID /dev/vdb | cut -d '"' -f2
+      register: uuid_vdb
+      when: vdb_status.stat.exists
+
+    - name: Mount /dev/vdb using UUID
+      mount:
+        path: /opt
+        src: "UUID={{ uuid_vdb.stdout }}"
+        fstype: xfs
+        state: mounted
+      when: vdb_status.stat.exists

@@ -1,0 +1,36 @@
+---
+# according to /etc/ansible/hosts Prod Group. match the server name with inventory IP
+- name: set server hostname
+  become: true
+  become_method: sudo
+  become_user: root
+  hosts: prod
+  vars:
+    hostnames:
+      172.17.194.21: SYNCOWORK-PROD-DIFY01
+      172.17.194.20: SYNCOWORK-PROD-KETTLE01
+      172.17.194.10: SYNCOWORK-PROD-MCP01
+      172.17.194.219: SYNCOWORK-PROD-NG01
+      172.17.194.12: SYNCOWORK-PROD-PDS01
+      172.17.194.7: SYNCOWORK-PROD-SHBE01
+      172.17.194.14: SYNCOWORK-PROD-SHFE01
+      172.17.194.13: SYNCOWORK-PROD-STBE01
+      172.17.194.11: SYNCOWORK-PROD-STFE01
+      172.17.194.15: SYNCOWORK-PROD-SV01
+      172.17.194.16: SYNCOWORK-PROD-SV02
+      172.17.194.103: SYNCOWORK-PROD-SV03
+      172.17.194.104: SYNCOWORK-PROD-SV04
+      172.17.194.8: SYNCOWORK-PROD-SWAUTH01
+      172.17.194.9: SYNCOWORK-PROD-SWFE01
+      172.17.194.22: SYNCOWORK-PROD-XXL01
+
+ 
+  tasks:
+  - name: fetch IP address
+    set_fact:
+      host_ip: "{{ hostvars[inventory_hostname].inventory_hostname }}"
+
+  - name: Set hostname
+    ansible.builtin.hostname:
+      name: "{{ hostnames[host_ip] }}"
+

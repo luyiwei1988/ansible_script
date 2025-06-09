@@ -1,0 +1,39 @@
+- name: Discover and format new disks
+  hosts: prod 
+  become: true
+  gather_facts: yes
+
+  tasks:
+    - name: Get block devices
+      ansible.builtin.command: lsblk -d -o NAME,TYPE,SIZE -n --noheadings
+      register: lsblk_output
+      changed_when: false
+
+    - name: Parse disk list
+      set_fact:
+        disks: "{{ lsblk_output.stdout_lines | map('regex_replace', '^(\\S+).*', '\\1') | list }}"
+        system_disk: "{{ ansible_devices.keys() | select('match', '^(sda|vda|hda|nvme0n1)$') | first }}"
+
+    - name: Filter new disks
+      set_fact:
+        new_disks: "{{ disks | difference([system_disk]) }}"
+
+    - name: Format disk as XFS filesystem
+      filesystem:
+        fstype: xfs
+        dev: /dev/{{ item }}
+      loop: "{{ new_disks }}"
+
+    - name: Get UUID
+      shell: blkid -s UUID /dev/{{ item }} | cut -d '"' -f2
+      register: uuid
+      loop: "{{ new_disks }}"
+
+    - name: Mount /dev/vdb using UUID
+      mount:
+        path: /opt
+        src: UUID={{ item.stdout }}
+        fstype: xfs
+        state: mounted
+      loop: "{{ uuid.results }}"
+
