@@ -1,0 +1,40 @@
+---
+- name: copy & unarchive package to dest
+  ansible.builtin.unarchive:
+    src: "{{ docker_package }}"
+    dest: /tmp/
+    mode: '0755'
+    copy: true
+
+- name: bash install docker
+  ansible.builtin.shell:
+    chdir: /tmp/docker
+    cmd: ./install.sh
+ 
+- name: cp docker compose to /usr/local/bin
+  ansible.builtin.copy:
+    src: docker-compose
+    dest: "{{ docker_bin_path }}/docker-compose"
+    mode: '755'
+    remote_src: false
+
+- name: cp daemon.json to /etc/docker/
+  ansible.builtin.copy:
+    src: daemon.json
+    dest: "{{ docker_daemon_path }}"
+    mode: '644'
+    remote_src: false
+
+- name: Start and enable service
+  ansible.builtin.systemd:
+    name: "docker.service"
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+
+- name: add ecs-user to docker group
+  ansible.builtin.user:
+    name: ecs-user
+    groups: docker
+    append: yes
+  ignore_errors: true

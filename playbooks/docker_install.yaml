@@ -1,0 +1,11 @@
+---
+- name: Deploy Docker & Docker Compose
+  hosts: docker_group
+  become: true
+  roles:
+    - docker_20.10.19
+
+  vars:
+    docker_package: docker_20.10.19_all.tar.gz
+    docker_bin_path: /usr/local/bin
+    docker_daemon_path: /etc/docker/daemon.json

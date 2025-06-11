@@ -1,0 +1,24 @@
+{
+  "registry-mirrors": [
+    "https://hub.littlediary.cn",
+    "https://docker.nju.edu.cn",
+    "https://c1za18ns.mirror.aliyuncs.com",
+    "https://dockerhub.icu",
+    "https://docker.chenby.cn",
+    "https://docker.1panel.live",
+    "https://docker.awsl9527.cn",
+    "https://docker.anyhub.us.kg",
+    "https://dhub.kubesre.xyz"
+  ],
+  "insecure-registries": [
+    "127.0.0.1"
+  ],
+  "bip": "192.168.10.1/24",
+  "data-root": "/opt/docker/data-root",
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-file": "3",
+    "max-size": "10m"
+  }
+}
+
