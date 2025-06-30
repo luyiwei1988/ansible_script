@@ -11,7 +11,7 @@ masterauth "{{ redis_password }}"
 replica-serve-stale-data no
 repl-disable-tcp-nodelay no
 daemonize yes
-maxmemory 4gb
+maxmemory {{ memory_threshold_gb_50 }}g
 appendonly no
 appendfilename "appendonly.aof"
 protected-mode yes

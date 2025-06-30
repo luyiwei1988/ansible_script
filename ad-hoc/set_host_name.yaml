@@ -4,26 +4,33 @@
   become: true
   become_method: sudo
   become_user: root
-  hosts: prod
+  hosts: uat
   vars:
     hostnames:
-      172.17.194.21: SYNCOWORK-PROD-DIFY01
-      172.17.194.20: SYNCOWORK-PROD-KETTLE01
-      172.17.194.10: SYNCOWORK-PROD-MCP01
-      172.17.194.219: SYNCOWORK-PROD-NG01
-      172.17.194.12: SYNCOWORK-PROD-PDS01
-      172.17.194.7: SYNCOWORK-PROD-SHBE01
-      172.17.194.14: SYNCOWORK-PROD-SHFE01
-      172.17.194.13: SYNCOWORK-PROD-STBE01
-      172.17.194.11: SYNCOWORK-PROD-STFE01
-      172.17.194.15: SYNCOWORK-PROD-SV01
-      172.17.194.16: SYNCOWORK-PROD-SV02
-      172.17.194.103: SYNCOWORK-PROD-SV03
-      172.17.194.104: SYNCOWORK-PROD-SV04
-      172.17.194.8: SYNCOWORK-PROD-SWAUTH01
-      172.17.194.9: SYNCOWORK-PROD-SWFE01
-      172.17.194.22: SYNCOWORK-PROD-XXL01
-
+      10.17.4.112: wfx-uat-xxljob
+      10.17.4.49: wfx-uat-syncoteam_frontend
+      10.17.4.140: wfx-uat-syncoteam_backend01
+      10.17.4.235: wfx-uat-syncoteam_backend02
+      10.17.4.229: wfx-uat-syncolab_frontend
+      10.17.4.76: wfx-uat-syncolab_backend
+      10.17.4.74: wfx-uat-lowcode_frontend
+      10.17.4.172: wfx-uat-nacos
+      10.17.4.57: wfx-uat-nginx_portal
+      10.17.4.150: wfx-uat-syncowork_frontend
+      10.17.4.252: wfx-uat-redis01
+      10.17.4.38: wfx-uat-syncowork_dify
+      10.17.4.70: wfx-uat-redis02
+      10.17.4.79: wfx-uat-redis03
+      10.17.4.139: wfx-uat-mysql01
+      10.17.4.52: wfx-uat-syncolab_sonarqube
+      10.17.4.86: wfx-uat-lowcode_backend01
+      10.17.4.224: wfx-uat-bigscreen_postgre
+      10.17.4.42: wfx-uat-lowcode_backend02
+      10.17.4.247: wfx-uat-kettle
+      10.17.4.131: wfx-uat-syncohour_frontend
+      10.17.4.236: wfx-uat-syncowork_base
+      10.17.4.68: wfx-uat-syncohour_backend01
+      10.17.4.206: wfx-uat-syncohour_backend02
  
   tasks:
   - name: fetch IP address

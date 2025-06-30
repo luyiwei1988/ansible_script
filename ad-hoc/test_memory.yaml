@@ -1,0 +1,17 @@
+---
+- name: check
+  hosts: redis01
+  gather_facts: yes
+
+  tasks:
+    - name: check memory
+      set_fact:
+        memory_total_mb: "{{ ansible_memory_mb | json_query('real.total') | int }}"
+
+    - name: check memory gb
+      set_fact:
+        memory_threshold_gb_50: "{{ (memory_total_mb | int / 1024 * 0.5) | round(0, 'common') | int }}"
+
+    - name: debug
+      debug:
+        msg: "{{ memory_threshold_gb_50 }}"

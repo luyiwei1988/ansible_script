@@ -1,5 +1,5 @@
 - name: Discover and format new disks
-  hosts: prod 
+  hosts: uat 
   become: true
   gather_facts: yes
 

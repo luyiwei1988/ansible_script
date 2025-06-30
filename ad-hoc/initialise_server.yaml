@@ -1,6 +1,6 @@
 ---
 - name: server base configure
-  hosts: prod
+  hosts: uat
   become: yes
   tasks:
   - name: add httpd group
@@ -23,7 +23,7 @@
       var: ansible_pkg_mgr
 
   - name: Install a list of packages
-    ansible.builtin.dnf:
+    ansible.builtin.yum:
       name:
         - unzip
         - vim
@@ -31,7 +31,7 @@
         - fontconfig
         - urw-fonts
       state: present
-      use_backend: dnf4
+      # use_backend: dnf4
     when: ansible_pkg_mgr == 'yum'
     tags: package
 

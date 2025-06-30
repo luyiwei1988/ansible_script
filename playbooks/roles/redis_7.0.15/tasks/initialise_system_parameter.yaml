@@ -19,7 +19,7 @@
   ansible.builtin.shell:
       cmd: sysctl -p
 
-- name: add into profile with JDK path
+- name: add into profile with bin path
   ansible.builtin.blockinfile:
     path: /etc/profile
     block: |
